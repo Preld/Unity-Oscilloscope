@@ -84,10 +84,10 @@ public class Connect2Arduino : MonoBehaviour
 		
 						useData = true;
 				} catch (Exception errorpiece) {
-						if (useData) {
+						/*if (useData) {
 								Debug.Log ("Error 1: " + errorpiece);
 								useData = false;
-						}
+						}*/
 				}
 
 		}

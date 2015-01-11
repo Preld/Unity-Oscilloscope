@@ -13,10 +13,13 @@ public class WaveMasterArduino : MonoBehaviour
 		private int interval_width = 3;
 		private LinkedList<float> wave_point_x;
 
-		private Wave[] m_wave;
-		public int wave_num = 2;
-		
 		private float before_data;
+
+		private Wave[] m_wave;
+		private int wave_num = 2;
+
+		private int separateNum;
+		private Vector3[] separateLine;
 
 		void Start ()
 		{
@@ -31,35 +34,44 @@ public class WaveMasterArduino : MonoBehaviour
 				}
 
 				max_height = (int)Screen.height;
-				int interval_height = max_height / wave_num;
-
+				float interval_height = max_height / (float)wave_num;
 				for (int i = 0; i < wave_num; i++) {
 						m_wave [i] = new Wave (interval_height, i, max_width);
+				}
+
+				// 線の数 * 先端終端
+				separateNum = wave_num - 1;
+				separateLine = new Vector3[separateNum * 2];
+				for (int i = 0; i < separateNum; i++) {
+						float height = max_height / (float)wave_num * (i + 1);
+						separateLine [i] = new Vector3 (max_width * interval_width, height, 0.0f);
+						separateLine [i + separateNum] = new Vector3 (0, height, 0.0f);
 				}
 		}
 
 		void Update ()
 		{
-				for (int i = 0; i < wave_num; i += 2) {
-						m_wave [i].addData (m_C2A.inputData [i] / 1023f);
-						float tmp = (m_C2A.inputData [i] * 0.1f + before_data * 0.9f);
-						m_wave [i + 1].addData (tmp / 1023f);
-						before_data = tmp;
-				}	
+				m_wave [0].addData (m_C2A.inputData [0] / 1023f);
+				float tmp = (m_C2A.inputData [0] * 0.1f + before_data * 0.9f);
+				m_wave [1].addData (tmp / 1023f);
+				before_data = tmp;
 		}
 
 		private Vector3[] posA;
 
 		void OnPostRender ()
 		{
-				// 描画開始.
+				// 描画開始
 				m_draw2D.Begin ();
 				{
+						// 区切り用の線を描画
 						Vector3[] Line = new Vector3[2];
-						Line [0] = new Vector3 (max_width * interval_width, max_height / 2, 0.0f);
-						Line [1] = new Vector3 (0, max_height / 2, 0.0f);
-		
-						m_draw2D.DrawLines (Line, new Color (0.0f, 0.0f, 0.0f));
+						for (int i = 0; i < separateNum; i++) {
+								Line [0] = separateLine [i];
+								Line [1] = separateLine [i + separateNum];
+								m_draw2D.DrawLines (Line, new Color (0.0f, 0.0f, 0.0f));
+						}
+
 		
 						for (int i = 0; i < wave_num; i++) {
 								posA = new Vector3[m_wave [i].wave_point.Count];
@@ -71,8 +83,15 @@ public class WaveMasterArduino : MonoBehaviour
 										m_draw2D.DrawLines (posA, new Color (0.0f, 0.0f, 0.0f));
 						}
 				}
-				// 描画終了.
+				// 描画終了
 				m_draw2D.End ();
 		}
 
+		public void fitButton ()
+		{
+				for (int i = 0; i < m_wave.Length; i++) {
+						m_wave [i].fitData ();
+				}
+		}
+				
 }
