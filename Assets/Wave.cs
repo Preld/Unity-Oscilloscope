@@ -27,9 +27,9 @@ public class Wave
 	
 				if (base_width <= wave_point.Count) {
 						wave_point.RemoveFirst ();
-						wave_point.AddLast (FixCoordinates.Instance.GetPointY (now_value));
+						wave_point.AddLast (now_value);
 				} else {
-						wave_point.AddLast (FixCoordinates.Instance.GetPointY (now_value));
+						wave_point.AddLast (now_value);
 				}
 		}
 		

@@ -5,8 +5,8 @@ using System;
 
 public class Connect2Arduino : MonoBehaviour
 {
-		//private static SerialPort sp = new SerialPort ("/dev/tty.usbmodem14141", 115200);
-		private static SerialPort sp = new SerialPort ("/dev/tty.usbmodem1451", 115200);
+		private static SerialPort sp = new SerialPort ("/dev/tty.usbmodem14121", 115200);
+		//private static SerialPort sp = new SerialPort ("/dev/tty.usbmodem1451", 115200);
 		//private static SerialPort sp = new SerialPort ("COM3", 115200);
 		public float[] inputData;
 		private const int pointNum = 1;
