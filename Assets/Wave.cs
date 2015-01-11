@@ -49,18 +49,9 @@ public class Wave
 
 		public void fitData ()
 		{
-				// 範囲を更新
-				highValue = maxValue;
-				lowValue = minValue;
-				/*LinkedList<float> new_point = new LinkedList<float> ();
-				float value = 0.0f;
-				for (int i = 0; i < wave_point.Count; i++) {
-						value = wave_point.ElementAt (i) - (base_height + base_value / 2f);
-						value = value / base_value + 0.5f;
-						value = base_value * (fitRange (value) - 0.5f) + (base_height + base_value / 2f);
-						new_point.AddLast (value);	
-				}
-				wave_point = new_point;*/
+				// 範囲を更新 後半は安全範囲
+				highValue = maxValue + (highValue - lowValue) / 10f;
+				lowValue = minValue - (highValue - lowValue) / 10f;
 				maxValue = 0.0f;
 				minValue = 1.0f;
 		}
