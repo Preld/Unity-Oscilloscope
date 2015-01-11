@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class WaveMasterArduino : MonoBehaviour
+public class WaveMaster : MonoBehaviour
 {
 		private UtilDraw2D m_draw2D;
 		private Connect2Arduino m_C2A;
