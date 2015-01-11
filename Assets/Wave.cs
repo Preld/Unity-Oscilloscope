@@ -17,6 +17,7 @@ public class Wave
 		// 代入される値は常に0~1
 		private float maxValue = 0.0f;
 		private float minValue = 1.0f;
+		// 範囲を格納する
 		private float highValue = 1.0f;
 		private float lowValue = 0.0f;
 

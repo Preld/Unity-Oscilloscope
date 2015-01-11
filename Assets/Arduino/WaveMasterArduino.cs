@@ -55,6 +55,7 @@ public class WaveMasterArduino : MonoBehaviour
 				float tmp = (m_C2A.inputData [0] * 0.1f + before_data * 0.9f);
 				m_wave [1].addData (tmp / 1023f);
 				before_data = tmp;
+
 		}
 
 		private Vector3[] posA;
