@@ -366,7 +366,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf1d9a4847c354371845632e2658218f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputData: []
   lost_count: 0
   useData: 1
 --- !u!4 &807229081

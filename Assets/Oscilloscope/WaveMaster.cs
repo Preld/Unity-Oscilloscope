@@ -6,7 +6,7 @@ using System.Linq;
 public class WaveMaster : MonoBehaviour
 {
 		private UtilDraw2D m_draw2D;
-		private Connect2Arduino m_C2A;
+		private ConnectInterface devices;
 
 		private int max_width;
 		private int max_height;
@@ -23,7 +23,11 @@ public class WaveMaster : MonoBehaviour
 
 		void Start ()
 		{
-				m_C2A = GameObject.FindGameObjectWithTag ("Arduino").GetComponent<Connect2Arduino> ();
+				devices = GameObject.FindGameObjectWithTag ("Arduino").GetComponent<Connect2Arduino> ();
+				devices.setPort ("/dev/tty.usbmodem1451", 115200, 1);
+				//("/dev/tty.usbmodem14121", 115200);
+				//("/dev/tty.usbmodem1451", 115200);
+				//("COM3", 115200);
 				m_draw2D = new UtilDraw2D ();
 				wave_point_x = new LinkedList<float> ();
 				m_wave = new Wave[wave_num];
@@ -51,8 +55,9 @@ public class WaveMaster : MonoBehaviour
 
 		void Update ()
 		{
-				m_wave [0].addData (m_C2A.inputData [0] / 1023f);
-				float tmp = (m_C2A.inputData [0] * 0.1f + before_data * 0.9f);
+				float[] data = devices.getVoltages ();
+				m_wave [0].addData (data [0] / 1023f);
+				float tmp = (data [0] * 0.1f + before_data * 0.9f);
 				m_wave [1].addData (tmp / 1023f);
 				before_data = tmp;
 
