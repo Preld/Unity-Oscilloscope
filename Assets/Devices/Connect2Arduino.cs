@@ -16,9 +16,9 @@ public class Connect2Arduino : MonoBehaviour,ConnectInterface
 		public void setPort (string portName, int baudRate, int inputNum)
 		{
 				sp = new SerialPort (portName, baudRate);
-				OpenConnection ();
 				this.inputNum = inputNum;
 				inputVoltages = new float[inputNum];
+				OpenConnection ();
 		}
 
 		#endregion
@@ -118,9 +118,13 @@ public class Connect2Arduino : MonoBehaviour,ConnectInterface
 								sp.Close ();
 								Debug.LogError ("Failed to open Serial Port, already open!");
 						} else {
-								sp.Open ();
-								sp.ReadTimeout = 50;
-								Debug.Log ("Open Serial port");
+								try {
+										sp.Open ();
+										sp.ReadTimeout = 50;
+										Debug.Log ("Open Serial port");
+								} catch {
+										Debug.Log ("Failed to open Serial Port");
+								}
 						}
 				}
 		}
