@@ -1,1 +1,4 @@
 # Unity-Oscilloscope
+Windowsのパケット処理速度(960bps)に合わせ、ArduinoにDelay(20)を追加した。
+
+MacではArduinoからの115200bpsのシリアル通信を処理することが可能だが、Windowsでは960bpsしか処理できないため、Graph上に信号が正しく反映されない。

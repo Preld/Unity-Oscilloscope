@@ -6,7 +6,7 @@ using System.Linq;
 public class WaveMaster : MonoBehaviour
 {
 		private UtilDraw2D m_draw2D;
-		private Connect2Arduino m_C2A;
+		private ConnectInterface devices;
 
 		private int max_width;
 		private int max_height;
@@ -16,17 +16,22 @@ public class WaveMaster : MonoBehaviour
 		private float before_data;
 
 		private Wave[] m_wave;
-		private int wave_num = 2;
+		private const int WAVE_NUM = 2;
 
 		private int separateNum;
 		private Vector3[] separateLine;
 
 		void Start ()
 		{
-				m_C2A = GameObject.FindGameObjectWithTag ("Arduino").GetComponent<Connect2Arduino> ();
+				devices = GameObject.FindGameObjectWithTag ("Arduino").GetComponent<Connect2Arduino> ();
+				devices.setPort ("COM3", 115200, 1);
+				//("/dev/tty.usbmodem14121", 115200);
+				//("/dev/tty.usbmodem1451", 115200);
+				//("COM3", 115200);
+
 				m_draw2D = new UtilDraw2D ();
 				wave_point_x = new LinkedList<float> ();
-				m_wave = new Wave[wave_num];
+				m_wave = new Wave[WAVE_NUM];
 
 				max_width = (int)Screen.width / interval_width;
 				for (int i = 0; i < max_width; i++) {
@@ -34,28 +39,29 @@ public class WaveMaster : MonoBehaviour
 				}
 
 				max_height = (int)Screen.height;
-				float interval_height = max_height / (float)wave_num;
-				for (int i = 0; i < wave_num; i++) {
+				float interval_height = max_height / (float)WAVE_NUM;
+				for (int i = 0; i < WAVE_NUM; i++) {
 						m_wave [i] = new Wave (interval_height, i, max_width);
 				}
 
 				// 線の数 * 先端終端
-				separateNum = wave_num - 1;
+				separateNum = WAVE_NUM - 1;
 				separateLine = new Vector3[separateNum * 2];
 				for (int i = 0; i < separateNum; i++) {
-						float height = max_height / (float)wave_num * (i + 1);
+						float height = max_height / (float)WAVE_NUM * (i + 1);
 						separateLine [i] = new Vector3 (max_width * interval_width, height, 0.0f);
 						separateLine [i + separateNum] = new Vector3 (0, height, 0.0f);
 				}
+
 		}
 
 		void Update ()
 		{
-				m_wave [0].addData (m_C2A.inputData [0] / 1023f);
-				float tmp = (m_C2A.inputData [0] * 0.1f + before_data * 0.9f);
+				float[] data = devices.getVoltages ();
+				m_wave [0].addData (data [0] / 1023f);
+				float tmp = (data [0] * 0.1f + before_data * 0.9f);
 				m_wave [1].addData (tmp / 1023f);
 				before_data = tmp;
-
 		}
 
 		private Vector3[] posA;
@@ -74,7 +80,7 @@ public class WaveMaster : MonoBehaviour
 						}
 
 		
-						for (int i = 0; i < wave_num; i++) {
+						for (int i = 0; i < WAVE_NUM; i++) {
 								posA = new Vector3[m_wave [i].wave_point.Count];
 
 								for (int j = 0; j < m_wave [i].wave_point.Count; j += 1) {
