@@ -24,7 +24,7 @@ public class WaveMaster : MonoBehaviour
 		void Start ()
 		{
 				devices = GameObject.FindGameObjectWithTag ("Arduino").GetComponent<Connect2Arduino> ();
-				devices.setPort ("/dev/tty.usbmodem1451", 115200, 1);
+				devices.setPort ("COM3", 115200, 1);
 				//("/dev/tty.usbmodem14121", 115200);
 				//("/dev/tty.usbmodem1451", 115200);
 				//("COM3", 115200);

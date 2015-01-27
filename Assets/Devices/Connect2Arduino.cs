@@ -91,7 +91,11 @@ public class Connect2Arduino : MonoBehaviour,ConnectInterface
 						head_low = low_val >> 5;
 			
 						receive_val = ((high_val & ((1 << 5) - 1)) << 5) + (low_val & ((1 << 5) - 1));
+<<<<<<< HEAD
 
+=======
+						
+>>>>>>> origin/master
 						inputVoltages [head_high + head_low] = receive_val;// / 1023f;
 						#endif
 
