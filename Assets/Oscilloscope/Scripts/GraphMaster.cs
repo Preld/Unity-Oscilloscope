@@ -5,15 +5,14 @@ using System.Linq;
 
 public class GraphMaster : MonoBehaviour
 {
-		private ConnectInterface _devices;
+		private IConnect2Devices _devices;
 		private Graph[] _graphs;
-
-		private float beforeValue;
+		private float _beforeValue;
 
 		void Start ()
 		{
 				_devices = GameObject.FindGameObjectWithTag ("Arduino").GetComponent<Connect2Arduino> ();
-				_devices.setPort ("COM3", 115200, 1);
+				_devices.SetPort ("COM3", 115200, 1);
 				//("/dev/tty.usbmodem14121", 115200);
 				//("/dev/tty.usbmodem1451", 115200);
 				//("COM3", 115200);
@@ -26,7 +25,7 @@ public class GraphMaster : MonoBehaviour
 
 		void Update ()
 		{
-				//float[] data = _devices.getVoltages ();
+				//float[] data = _devices.GetVoltages ();
 				float[] data = new float[2];
 				data [0] = Mathf.Abs (Mathf.Sin (Time.time * 3f));
 				data [1] = Mathf.Abs (Mathf.Sin (Time.time * 5f));
@@ -38,11 +37,11 @@ public class GraphMaster : MonoBehaviour
 				//before_data = tmp;
 
 				// set value
-				_graphs [0].setValue (data [0]);
-				_graphs [1].setValue (data [1]);
+				_graphs [0].SetValue (data [0]);
+				_graphs [1].SetValue (data [1]);
 		}
 
-		public void fitButton ()
+		public void FitButton ()
 		{
 		}
 				

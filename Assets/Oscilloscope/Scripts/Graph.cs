@@ -6,14 +6,11 @@ public class Graph : MonoBehaviour
 {
 
 		private const int RESOLUTION_WIDTH = 240;
-	
-		private LineRenderer _lineRenderer;
-		private float _backgroundHeight;
-		private float _backgroundWidth;
-		private Vector3 _centerLineBegin;
-		private Vector3 _centerLineEnd;
-		private Bounds _myBounds;
 
+		// Wave
+		private LineRenderer _waveRenderer;
+
+		// To decide draw point;
 		private Vector3 _baseLinePos;
 		private Vector3 _baseX;
 		private Vector3 _baseY;
@@ -21,50 +18,31 @@ public class Graph : MonoBehaviour
 
 		void Start ()
 		{
-				// init line
-				_lineRenderer = gameObject.AddComponent (typeof(LineRenderer)) as LineRenderer;
-				_lineRenderer.material.color = new Color (0, 0, 0, 1.0f);
-				_lineRenderer.SetWidth (0.05f, 0.05f);
-				_lineRenderer.SetVertexCount (RESOLUTION_WIDTH);	
+				// Ready drawing line
+				_waveRenderer = gameObject.AddComponent (typeof(LineRenderer)) as LineRenderer;
+				_waveRenderer.material.color = new Color (0, 0, 0, 1.0f);
+				_waveRenderer.SetWidth (0.05f, 0.05f);
+				_waveRenderer.SetVertexCount (RESOLUTION_WIDTH);	
 
-				// init positions	
-				_myBounds = GetBound ();
-				Vector3 objectSize = new Vector3 (
-						                     _myBounds.extents.x * this.transform.lossyScale.x,
-						                     _myBounds.extents.y * this.transform.lossyScale.y,
-						                     _myBounds.extents.z * this.transform.lossyScale.z
-				                     );
+				// Cale drawing base point
+				Vector3 objectSize = GetObjectSize (this.gameObject);
 				_baseLinePos = new Vector3 (
-						transform.position.x - objectSize.x,
-						transform.position.y - objectSize.z,
-						transform.position.z - 0.1f //カメラの方へ少しずらす
+						this.transform.position.x - objectSize.x / 2.0f,
+						this.transform.position.y - objectSize.y / 2.0f,
+						this.transform.position.z - 0.1f //カメラの方へ少しずらす
 				);
-				/*_centerLineBegin = new Vector3 (
-						transform.position.x - objectSize.x,
-						transform.position.y,
-						transform.position.z - 0.1f //カメラの方へ少しずらす
-				);
-				_centerLineEnd = new Vector3 (
-						transform.position.x + objectSize.x,
-						transform.position.y,
-						transform.position.z - 0.1f //カメラの方へ少しずらす
-				);*/
-
-				// init size
-				_backgroundHeight = objectSize.z * 2f; // 回転しているため
-				_backgroundWidth = objectSize.x * 2f;
 				_baseX = new Vector3 (
-						_backgroundWidth / (RESOLUTION_WIDTH - 1),
+						objectSize.x / (RESOLUTION_WIDTH - 1),
 						0,
 						0
 				);
 				_baseY = new Vector3 (
 						0,
-						_backgroundHeight,
+						objectSize.y,
 						0
 				);
 						
-				// dummy data
+				// init variable 
 				_yPoints = new List<float> ();
 				for (int i = 0; i < RESOLUTION_WIDTH; i++) {
 						_yPoints.Add (0f);
@@ -74,20 +52,36 @@ public class Graph : MonoBehaviour
 		void Update ()
 		{
 				for (int i = 0; i < RESOLUTION_WIDTH; i++) {
-						_lineRenderer.SetPosition (i, _baseLinePos + _baseX * i + _baseY * _yPoints [i]);
+						_waveRenderer.SetPosition (i, _baseLinePos + _baseX * i + _baseY * _yPoints [i]);
 				}
 		}
 
-		public void setValue (float value)
+		public void SetValue (float value)
 		{
+				// Correct range of value is between 0f and 1f.
 				_yPoints.Add (value);
 				_yPoints.RemoveAt (0);
 		}
 
-		private Bounds GetBound ()
+		private Vector3 GetObjectSize (GameObject gameObject)
 		{
-				Bounds bounds = this.GetComponent<MeshFilter> ().mesh.bounds;
-				//bounds.center = Vector3.zero;
-				return bounds;
+				Vector3 originObjectSize = GetOriginalObjectSize (gameObject);
+				return gameObject.transform.rotation * originObjectSize;
+		}
+
+		private Vector3 GetOriginalObjectSize (GameObject gameObject)
+		{
+				Bounds myBounds = GetBound (gameObject);
+				Vector3 objectSize = new Vector3 (
+						                     myBounds.size.x * gameObject.transform.lossyScale.x,
+						                     myBounds.size.y * gameObject.transform.lossyScale.y,
+						                     myBounds.size.z * gameObject.transform.lossyScale.z
+				                     );
+				return objectSize;
+		}
+
+		private Bounds GetBound (GameObject gameObject)
+		{
+				return gameObject.GetComponent<MeshFilter> ().mesh.bounds;
 		}
 }
